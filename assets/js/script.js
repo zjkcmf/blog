@@ -12,7 +12,7 @@ if ($(window).width() <= 1280) {
 
 // Variables
     tag1       = $('.pl__all'),
-    tag2       = $('.tag_multi_thread'),
+    tag2       = $('.tag_multi_thread');
 var sidebar    = $('#sidebar'),
     container  = $('#post'),
     content    = $('#pjax'),
