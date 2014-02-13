@@ -7,7 +7,7 @@ layout: index
   {{ content }}
 </article> <!-- end #post__content -->
 
-<div id="post__share">
+<!--<div id="post__share">
   <a id="icon-twitter" class="fontello" href="https://twitter.com/intent/tweet?url=zjkcmf.com{{ page.url }}&text={{ page.title }}" target="_blank"></a>
   <a id="icon-cc" class="fontello" href="http://creativecommons.org/licenses/by-nc-sa/3.0" target="_blank"></a>
   <a id="icon-weibo" class="fontello" href="http://v.t.sina.com.cn/share/share.php?url=zjkcmf.com{{ page.url }}&title={{ page.title }}" target="_blank"></a>
@@ -17,5 +17,21 @@ layout: index
   <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
   <a href="http://disqus.com" class="dsq-brlink" target="_blank">Loading Disqus comments...</a>
 </div> <!-- end #disqus_thread -->
+-->
+
+<!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"zjkcmf"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END -->
 
 <p id="copyright">Powered by <a href="http://jekyllrb.com" target="_blank">Jekyll</a>&nbsp;&nbsp;|&nbsp;&nbsp;Theme <a href="https://github.com/P233/3-Jekyll" target="_blank">3-Jekyll</a></p>
