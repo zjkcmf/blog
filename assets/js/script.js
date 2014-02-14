@@ -17,7 +17,7 @@ var sidebar    = $('#sidebar'),
     button     = $('#icon-arrow');
 
 $.each(window.tags, function(index, value){
-    if(value = '全部文章'){
+    if(value == '全部文章'){
         $('#tags__ul').append('<li id="js-label'+value+'" class="tags__li tags-btn active" onclick="javascript:clickHandler(&quot;'+value+'&quot;);">'+value+'</li>');
     }else{
         $('#tags__ul').append('<li id="js-label'+value+'" class="tags__li tags-btn" onclick="javascript:clickHandler(&quot;'+value+'&quot;);">'+value+'</li>');
