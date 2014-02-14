@@ -57,7 +57,7 @@ $('#mobile-avatar').on('click', function(){
 });
 
 // Pjax
-$(document).pjax('#avatar, #mobile-avatar, .pl__all', '#pjax', { fragment: '#pjax', timeout: 10000 });
+$(document).pjax('#avatar, #mobile-avatar, .全部文章', '#pjax', { fragment: '#pjax', timeout: 10000 });
 $(document).on({
   'pjax:click': function() {
     content.removeClass('fadeIn').addClass('fadeOut');
