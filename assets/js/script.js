@@ -18,22 +18,22 @@ var sidebar    = $('#sidebar'),
 
 $.each(window.tags, function(index, value){
     if(value == '全部文章'){
-        $('#tags__ul').append('<li id="js-label'+value+'" class="tags__li tags-btn active" onclick="javascript:clickHandler(&quot;'+value+'&quot;);">'+value+'</li>');
+        $('#tags__ul').append('<li id="js-label'+value+'" class="tags__li tags-btn active">'+value+'</li>');
     }else{
-        $('#tags__ul').append('<li id="js-label'+value+'" class="tags__li tags-btn" onclick="javascript:clickHandler(&quot;'+value+'&quot;);">'+value+'</li>');
+        $('#tags__ul').append('<li id="js-label'+value+'" class="tags__li tags-btn">'+value+'</li>');
     }
+
+    $('#js-label'+value).click(function() {
+        var vv = $(this).attr('id').substring(8);
+        $(this).addClass('active').siblings().removeClass('active');
+        $('.全部文章').hide();
+        $('.'+vv).delay(50).fadeIn(350);
+
+        if (vv == '全部文章' && sidebar.hasClass('mobile')) {
+            $('#sidebar, #pjax, #icon-arrow').addClass('fullscreen');
+        }
+    });
 });
-
-// Tags switcher
-window.clickHandler = function(k) {
-    $(this).addClass('active').siblings().removeClass('active');
-    $('.全部文章').hide();
-    $('.'+k).delay(50).fadeIn(350);
-
-    if (k == '全部文章' && sidebar.hasClass('mobile')) {
-        $('#sidebar, #pjax, #icon-arrow').addClass('fullscreen');
-    }
-};
 
 // Enable fullscreen.
 $('#js-fullscreen').on('click', function() {
