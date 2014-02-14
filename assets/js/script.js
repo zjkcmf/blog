@@ -12,23 +12,26 @@ if ($(window).width() <= 1280) {
 
 // Variables
     tag1       = $('.pl__all'),
-    tag2       = $('.tag_multi_thread');
+    tag2       = $('.多线程');
 var sidebar    = $('#sidebar'),
     container  = $('#post'),
     content    = $('#pjax'),
     button     = $('#icon-arrow');
 
+$.each(window.tags, function(index, value){
+    if(value = '全部文章'){
+        $('#tags__ul').append('<li id="js-label'+value+'" class="tags__li tags-btn active">'+value+'</li>');
+    }else{
+        $('#tags__ul').append('<li id="js-label'+value+'" class="tags__li tags-btn" onclick="javascript:clickHandler(&quot;'+value+'&quot;);">'+value+'</li>');
+    }
+});
+
 // Tags switcher
-var clickHandler = function(k) {
-  return function() {
+window.clickHandler = function(k) {
     $(this).addClass('active').siblings().removeClass('active');
-    tag1.hide();
-    window['tag'+k].delay(50).fadeIn(350);
-  }
+    $('.全部文章').hide();
+    $('.'+k).delay(50).fadeIn(350);
 };
-for (var i = 1; i <= 2; i++) {
-  $('#js-label' + i).on('click', clickHandler(i));
-}
 
 // If sidebar has class 'mobile', hide it after clicking.
 tag1.on('click', function() {

@@ -1,6 +1,6 @@
 ---
 layout: post
 title: test markdown
-categories: ["tag_multi_thread"]
+categories: ["多线程"]
 ---
 ##test
