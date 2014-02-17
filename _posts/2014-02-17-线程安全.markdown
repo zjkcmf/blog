@@ -1,0 +1,59 @@
+---
+title: 线程安全
+layout: post
+categories: [多线程]
+guid: urn:uuid:d5caddad-5b21-4236-87ab-cbd6924c760b
+tags:
+  - 
+---
+
+## 结论
+> 无状态的对象总是线程安全的。
+
+---------------
+
+### check-then-act
+> You observe something to be true and then take action based on that observation;
+> but in fact the observation could have become invalid between the time you observed it and the time you acted on it,
+> causing a problem.
+
++ 懒加载
+{% highlight java linenos %}
+@NotThreadSafe 
+public class LazyInitRace { 
+    private ExpensiveObject instance = null; 
+    public ExpensiveObject getInstance() { 
+        if (instance == null) 
+            instance = new ExpensiveObject(); 
+        return instance; 
+    } 
+} 
+{% endhighlight %}
+
+----------------
+
+### ReentrantLock
+    由一个计数器和一个锁拥有者组成。
+    计数器记录当前拥有者线程已经进入锁块儿的次数。
+    每当该线程进入锁块儿，计数器加一；退出锁块儿，计数器减一。
+    当计数器为0时，释放锁（其他线程可以获取）。
+
+#### Java的monitor是支持Reentrant的:
+{% highlight java linenos %}
+class Reentrant {
+    public synchronized void a() {
+	b();
+	System.out.println("here I am, in a()");
+    }
+    public synchronized void b() {
+	System.out.println("here I am, in b()");
+    }
+}
+{% endhighlight %}
+可以查看[详细说明](http://journals.ecs.soton.ac.uk/java/tutorial/java/threads/reentrant.html)
+
+---------------------
+
+### 注意
+> Whenever you use locking, you should be aware of what the code in the block is doing and how likely it is to take a long 
+> time to execute.
