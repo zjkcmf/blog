@@ -1,0 +1,51 @@
+---
+title: 对象的共享
+layout: post
+categories: [多线程]
+guid: urn:uuid:dcb134a9-358e-4d7c-89eb-a2987e851641
+tags:
+  - 
+---
+
+### Locking is not just about mutual exclusion; it is also about memory visibility. 
+### 要确保所有线程都看到某个变量的最新值，这些读写线程必须由同一个锁来同步。
+
+-----------------
+
+### volatile变量
++ 对该变量操作的对应内存操作，不会被重排序
++ 该变量不会被相应的处理器缓存
++ 线程A先写一个volatile变量，然后线程B读这个变量。则所有在A写这个变量之前对A可见的变量值，在B读这个变量之后对B可见。
+  从内存结构上说，写一个volatile变量，相当于退出一个synchronized block；读一个volatile变量，相当于进入这个synchronized block。
++ 典型应用完成、中断或者状态标志：
+{% highlight java %}
+public class CountingSheep {
+    volatile boolean asleep;
+
+    void tryToSleep() {
+        while (!asleep)
+            countSomeSheep();
+    }
+
+    void countSomeSheep() {
+        // One, two, three...
+    }
+}
+{% endhighlight %}
++ Locking can guarantee both visibility and atomicity; volatile variables can only guarantee visibility. 
+查看[更多](http://www.infoq.com/cn/articles/java-memory-model-4)
+
+--------------------
+
+### 不要在构造函数里发布this(哪怕是最后一行)，这样会暴露不完整的对象。如：
+{% highlight java %}
+public class ThisEscape {
+    public ThisEscape(EventSource source) {
+        source.registerListener(new EventListener() {
+            public void onEvent(Event e) {
+                doSomething(e);
+            }
+        });
+    }
+}
+{% endhighlight %}
