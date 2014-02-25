@@ -1,0 +1,121 @@
+---
+title: 同步工具类
+layout: post
+categories: [多线程]
+guid: urn:uuid:3bf0e24e-e67f-49ee-a8e4-573100f9dbff
+tags:
+  - 
+---
+
+## 闭锁
+    闭锁的作用相当于一扇门：在闭锁到达结束状态前，这扇门一直是关闭的，并且没有任何线程能通过。
+    当到达结束状态时，这扇门会打开并允许所有线程通过。
+{% highlight java %}
+public long timeTasks(int nThreads, final Runnable task)
+                throws InterruptedException {
+        final CountDownLatch startGate = new CountDownLatch(1);
+        final CountDownLatch endGate = new CountDownLatch(nThreads);
+        for (int i = 0; i < nThreads; i++) {
+                Thread t = new Thread() {
+                        public void run() {
+                                try {
+                                        startGate.await();
+                                        try {
+                                                task.run();
+                                        } finally {
+                                                endGate.countDown();
+                                        }
+                                } catch (InterruptedException ignored) {
+                                }
+                        }
+                };
+                t.start();
+        }
+        long start = System.currentTimeMillis();
+        startGate.countDown();
+        endGate.await();
+        long end = System.currentTimeMillis();
+        return end - start;
+}
+{% endhighlight %}
+
+-------------------------
+
+## FutureTask
+    表示一种抽象的可生成结果的计算，实现了Runnable接口和Future接口。
+    包括三种状态：
++ 1.等待状态(Waiting to run)
++ 2.正在运行(Running)
++ 3.运行完成(Completed)，包括正常结束、因取消而结束、因异常而结束等。
+    get方法会一直阻塞，直到“运行完成”状态。
+
+{% highlight java %}
+public class Preloader {
+	private final FutureTask<ProductInfo> future = new FutureTask<ProductInfo>(
+			new Callable<ProductInfo>() {
+				public ProductInfo call() throws DataLoadException {
+					return loadProductInfo();
+				}
+			});
+	private final Thread thread = new Thread(future);
+
+	public void start() {
+		thread.start();
+	}
+
+	public ProductInfo get() throws DataLoadException, InterruptedException {
+		try {
+			return future.get();
+		} catch (ExecutionException e) {
+			Throwable cause = e.getCause();
+			if (cause instanceof DataLoadException)
+				throw (DataLoadException) cause;
+			else
+				throw launderThrowable(cause);
+		}
+	}
+}
+{% endhighlight %}
+
+--------------------------
+
+## 信号量(Semaphore)
+-    用来控制同时访问某个特定资源的操作数量，或者同时执行某个指定操作的数量。
+-    Semaphore中管理着一组虚拟的许可(permit)。
+-    在执行操作时，先获得许可(只要还有剩余的许可)，并在使用以后释放许可。
+-    如果没有许可，那么acquire方法将阻塞，直到有许可。
+-    release方法将返回一个许可给信号量。
+-    只有一个许可的信号量可用作互斥锁(不可重入)
+
+{% highlight java %}
+public class BoundedHashSet<T> {
+        private final Set<T> set;
+        private final Semaphore sem;
+
+        public BoundedHashSet(int bound) {
+            this.set = Collections.synchronizedSet(new HashSet<T>());
+            sem = new Semaphore(bound);
+        }
+
+        public boolean add(T o) throws InterruptedException {
+            sem.acquire();
+            boolean wasAdded = false;
+            try {
+                wasAdded = set.add(o);
+                return wasAdded;
+            }
+            finally {
+                if(!wasAdded) sem.release();
+            }
+        }
+}
+{% endhighlight %}    
+
+--------------------------
+
+## 栅栏
+    阻塞一组线程直到某个事件发生。
+    栅栏与闭锁的关键区别在于，所有线程必须同时到达栅栏位置，才能继续执行。
+闭锁用于等待事件，而栅栏用于等待其他线程。
+    当所有线程都通过栅栏后，栅栏会重置，而闭锁是一次性的。
+
